@@ -4,17 +4,10 @@ import 'package:frontend/features/auth/presentation/providers/auth_provider.dart
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({
-    super.key,
-  });
+  const HomeScreen({super.key});
 
-  Future<void> _logout(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    await ref
-        .read(authProvider.notifier)
-        .logout();
+  Future<void> _logout(BuildContext context, WidgetRef ref) async {
+    await ref.read(authProvider.notifier).logout();
 
     if (context.mounted) {
       context.go('/login');
@@ -22,15 +15,10 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    final authState =
-        ref.watch(authProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider);
 
-    final user =
-        authState.value?.user;
+    final user = authState.value?.user;
 
     return Scaffold(
       appBar: AppBar(
@@ -40,17 +28,11 @@ class HomeScreen extends ConsumerWidget {
             onPressed: () {
               _logout(context, ref);
             },
-            icon: const Icon(
-              Icons.logout,
-            ),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
-      body: Center(
-        child: Text(
-          'Welcome ${user?.email ?? ''}',
-        ),
-      ),
+      body: Center(child: Text('Welcome ${user?.email ?? ''}')),
     );
   }
 }

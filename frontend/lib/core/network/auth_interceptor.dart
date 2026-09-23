@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:frontend/core/storage/secure_storage.dart';
 
@@ -8,23 +7,17 @@ class AuthInterceptor extends Interceptor {
 
   Future<String?>? _refreshing;
 
-  AuthInterceptor({
-    required this.dio,
-    required this.storage,
-  });
+  AuthInterceptor({required this.dio, required this.storage});
 
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final accessToken =
-        await storage.getAccessToken();
+    final accessToken = await storage.getAccessToken();
 
-    if (accessToken != null &&
-        accessToken.isNotEmpty) {
-      options.headers['Authorization'] =
-          'Bearer $accessToken';
+    if (accessToken != null && accessToken.isNotEmpty) {
+      options.headers['Authorization'] = 'Bearer $accessToken';
     }
 
     handler.next(options);
@@ -49,8 +42,7 @@ class AuthInterceptor extends Interceptor {
     }
 
     try {
-      final newAccessToken =
-          await _refreshAccessToken();
+      final newAccessToken = await _refreshAccessToken();
 
       if (newAccessToken == null) {
         await storage.clear();
@@ -58,14 +50,11 @@ class AuthInterceptor extends Interceptor {
         return;
       }
 
-      final requestOptions =
-          err.requestOptions;
+      final requestOptions = err.requestOptions;
 
-      requestOptions.headers['Authorization'] =
-          'Bearer $newAccessToken';
+      requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
 
-      final response =
-          await dio.fetch(requestOptions);
+      final response = await dio.fetch(requestOptions);
 
       handler.resolve(response);
     } catch (_) {
@@ -91,11 +80,9 @@ class AuthInterceptor extends Interceptor {
   }
 
   Future<String?> _performRefresh() async {
-    final refreshToken =
-        await storage.getRefreshToken();
+    final refreshToken = await storage.getRefreshToken();
 
-    if (refreshToken == null ||
-        refreshToken.isEmpty) {
+    if (refreshToken == null || refreshToken.isEmpty) {
       return null;
     }
 
@@ -104,29 +91,20 @@ class AuthInterceptor extends Interceptor {
     final refreshDio = Dio(
       BaseOptions(
         baseUrl: dio.options.baseUrl,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       ),
     );
 
     final response = await refreshDio.post(
       '/auth/refresh',
-      data: {
-        'refreshToken': refreshToken,
-      },
+      data: {'refreshToken': refreshToken},
     );
 
-    final data =
-        Map<String, dynamic>.from(
-      response.data as Map,
-    );
+    final data = Map<String, dynamic>.from(response.data as Map);
 
-    final accessToken =
-        data['accessToken'] as String;
+    final accessToken = data['accessToken'] as String;
 
-    final newRefreshToken =
-        data['refreshToken'] as String;
+    final newRefreshToken = data['refreshToken'] as String;
 
     await storage.saveTokens(
       accessToken: accessToken,
@@ -136,4 +114,3 @@ class AuthInterceptor extends Interceptor {
     return accessToken;
   }
 }
-

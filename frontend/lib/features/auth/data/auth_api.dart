@@ -11,15 +11,10 @@ class AuthApi {
   }) async {
     final response = await dio.post(
       '/auth/register',
-      data: {
-        'email': email,
-        'password': password,
-      },
+      data: {'email': email, 'password': password},
     );
 
-    return Map<String, dynamic>.from(
-      response.data as Map,
-    );
+    return Map<String, dynamic>.from(response.data as Map);
   }
 
   Future<Map<String, dynamic>> login({
@@ -28,35 +23,19 @@ class AuthApi {
   }) async {
     final response = await dio.post(
       '/auth/login',
-      data: {
-        'email': email,
-        'password': password,
-      },
+      data: {'email': email, 'password': password},
     );
 
-    return Map<String, dynamic>.from(
-      response.data as Map,
-    );
+    return Map<String, dynamic>.from(response.data as Map);
   }
 
   Future<Map<String, dynamic>> me() async {
-    final response = await dio.get(
-      '/auth/me',
-    );
+    final response = await dio.get('/auth/me');
 
-    return Map<String, dynamic>.from(
-      response.data as Map,
-    );
+    return Map<String, dynamic>.from(response.data as Map);
   }
 
-  Future<void> logout({
-    required String refreshToken,
-  }) async {
-    await dio.post(
-      '/auth/logout',
-      data: {
-        'refreshToken': refreshToken,
-      },
-    );
+  Future<void> logout({required String refreshToken}) async {
+    await dio.post('/auth/logout', data: {'refreshToken': refreshToken});
   }
 }
