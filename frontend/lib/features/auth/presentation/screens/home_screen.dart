@@ -6,7 +6,10 @@ import 'package:go_router/go_router.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-  Future<void> _logout(BuildContext context, WidgetRef ref) async {
+  Future<void> _logout(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     await ref.read(authProvider.notifier).logout();
 
     if (context.mounted) {
@@ -15,9 +18,11 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     final authState = ref.watch(authProvider);
-
     final user = authState.value?.user;
 
     return Scaffold(
@@ -29,10 +34,47 @@ class HomeScreen extends ConsumerWidget {
               _logout(context, ref);
             },
             icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
           ),
         ],
       ),
-      body: Center(child: Text('Welcome ${user?.email ?? ''}')),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Welcome',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall,
+            ),
+
+            const SizedBox(height: 8),
+
+            if (user != null)
+              Text(
+                user.email,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge,
+              ),
+
+            const SizedBox(height: 32),
+
+            FilledButton.icon(
+              onPressed: () {
+                context.push('/billers');
+              },
+              icon: const Icon(
+                Icons.receipt_long,
+              ),
+              label: const Text('Pay a bill'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import jwt from "@fastify/jwt";
 
 import { env } from "./config/env.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
+import { billerRoutes } from "./modules/billers/biller.routes.js";
 
 export function buildApp() {
   const app = Fastify({
@@ -43,6 +44,10 @@ export function buildApp() {
 
   app.register(authRoutes, {
     prefix: "/api/v1/auth",
+  });
+
+  app.register(billerRoutes, {
+    prefix: "/api/v1",
   });
 
   return app;
